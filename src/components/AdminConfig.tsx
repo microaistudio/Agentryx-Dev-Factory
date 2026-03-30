@@ -97,7 +97,7 @@ const AdminConfig: React.FC = () => {
     
     // Save to the actual Node.js Telemetry Config Server
     try {
-      await fetch('http://localhost:4401/api/config', {
+      await fetch('/telemetry/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(keys)
@@ -114,7 +114,7 @@ const AdminConfig: React.FC = () => {
     setTesting(true);
     setTestStatus(null);
     try {
-      const res = await fetch('http://localhost:4401/api/test-connection', {
+      const res = await fetch('/telemetry/test-connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(keys)

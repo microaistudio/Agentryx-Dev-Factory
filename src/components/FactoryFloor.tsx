@@ -68,7 +68,7 @@ const FactoryFloor: React.FC = () => {
 
   const triggerSimulation = async () => {
     try {
-      await fetch('http://localhost:4401/api/telemetry/simulate', { method: 'POST' });
+      await fetch('/telemetry/telemetry/simulate', { method: 'POST' });
     } catch(e) { console.error('Sim Error', e); }
   };
 
@@ -76,7 +76,7 @@ const FactoryFloor: React.FC = () => {
     if (!taskInput.trim() || factoryRunning) return;
     setFactoryRunning(true);
     try {
-      await fetch('http://localhost:4401/api/factory/run', {
+      await fetch('/telemetry/factory/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ task: taskInput })
@@ -88,7 +88,7 @@ const FactoryFloor: React.FC = () => {
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    const sse = new EventSource('http://localhost:4401/api/telemetry/stream');
+    const sse = new EventSource('/telemetry/telemetry/stream');
     sse.onmessage = (e) => {
         try {
             const state = JSON.parse(e.data);
@@ -394,7 +394,7 @@ const FactoryFloor: React.FC = () => {
           <div style={{ display: 'flex', gap: '8px' }}>
             <button onClick={async () => {
               try {
-                const res = await fetch('http://localhost:4401/api/workspace/files');
+                const res = await fetch('/telemetry/workspace/files');
                 const data = await res.json();
                 setWorkspaceFiles(data.files || []);
               } catch(e) { console.error(e); }
@@ -433,7 +433,7 @@ const FactoryFloor: React.FC = () => {
                     <span style={{ color: '#c4b5fd', fontWeight: 'bold' }}>📄 {selectedFile.name}</span>
                     <button onClick={async () => {
                       try {
-                        const res = await fetch('http://localhost:4401/api/workspace/run', {
+                        const res = await fetch('/telemetry/workspace/run', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ filename: selectedFile.name })
