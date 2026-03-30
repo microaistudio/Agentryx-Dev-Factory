@@ -26,7 +26,7 @@ interface AgentDef {
 }
 
 const AGENTS: AgentDef[] = [
-  { id: 'janeway', name: 'Janeway', role: 'PM / Triage — Routes tickets with Delta Quadrant precision', cssClass: 'janeway' },
+  { id: 'jane', name: 'Jane', role: 'PM / Triage — Routes tickets with Delta Quadrant precision', cssClass: 'jane' },
   { id: 'spock', name: 'Spock', role: 'Auto-Research — Logical deep analysis & tech scouting', cssClass: 'spock' },
   { id: 'torres', name: 'Torres', role: 'Junior Dev — Builds components with Klingon intensity', cssClass: 'torres' },
   { id: 'data', name: 'Data', role: 'Sr. Architect — Positronic debugging & algorithm design', cssClass: 'data' },
@@ -68,7 +68,7 @@ const AdminConfig: React.FC = () => {
   });
 
   const [agentModels, setAgentModels] = useState<AgentModel>({
-    janeway: 'gemini-3.1-pro',
+    jane: 'gemini-3.1-pro',
     spock: 'gemini-3.1-pro',
     torres: 'claude-opus-4',
     data: 'claude-opus-4',

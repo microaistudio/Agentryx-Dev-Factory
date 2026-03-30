@@ -9,7 +9,7 @@ let mockInterval = null;
 function getInitialState() {
   return {
     agents: [
-      { id: 'janeway', name: 'Janeway', role: 'PM / Triage', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'janeway', room: 0 },
+      { id: 'jane', name: 'Jane', role: 'PM / Triage', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'jane', room: 0 },
       { id: 'spock', name: 'Spock', role: 'Auto-Research', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'spock', room: 1 },
       { id: 'torres', name: 'Torres', role: 'Junior Dev', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'torres', room: 2 },
       { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'data', room: 2 },
@@ -54,8 +54,8 @@ async function runSimulationLoop() {
     // Step 1: T1 enters Backlog
     async () => {
       currentState.workItems.push({ ...t1, room: 0 }); // Backlog
-      currentState.agents.find(a=>a.id==='janeway').status = 'working';
-      addLog('janeway', `Ingesting ${t1.id} into Backlog.`);
+      currentState.agents.find(a=>a.id==='jane').status = 'working';
+      addLog('jane', `Ingesting ${t1.id} into Backlog.`);
     },
     // Step 2: T1 to Build, T2 enters Backlog
     async () => {
@@ -64,14 +64,14 @@ async function runSimulationLoop() {
       currentState.agents.find(a=>a.id==='torres').room = 2;
       currentState.agents.find(a=>a.id==='torres').status = 'working';
       addLog('torres', `Started dev on ${t1.id}.`);
-      addLog('janeway', `Triaging new ticket ${t2.id}.`);
+      addLog('jane', `Triaging new ticket ${t2.id}.`);
     },
     // Step 3: T1 to QA, T2 to Build, T3 enters Backlog
     async () => {
       currentState.workItems.find(w=>w.id===t1.id).room = 3; // QA
       currentState.workItems.find(w=>w.id===t2.id).room = 2; // Build
       currentState.workItems.push({ ...t3, room: 0 });
-      currentState.agents.find(a=>a.id==='janeway').status = 'idle';
+      currentState.agents.find(a=>a.id==='jane').status = 'idle';
       currentState.agents.find(a=>a.id==='tuvok').status = 'working';
       currentState.agents.find(a=>a.id==='data').room = 2;
       currentState.agents.find(a=>a.id==='data').status = 'working';
@@ -94,10 +94,10 @@ async function runSimulationLoop() {
       currentState.workItems.find(w=>w.id===t2.id).room = 4; // Review
       currentState.workItems.find(w=>w.id===t3.id).room = 3; // QA
       currentState.agents.find(a=>a.id==='obrien').status = 'working';
-      currentState.agents.find(a=>a.id==='janeway').room = 4; // PM reviews
-      currentState.agents.find(a=>a.id==='janeway').status = 'working';
+      currentState.agents.find(a=>a.id==='jane').room = 4; // PM reviews
+      currentState.agents.find(a=>a.id==='jane').status = 'working';
       addLog('obrien', `Deploying ${t1.id} to production.`);
-      addLog('janeway', `Reviewing rushed ${t2.id}...`);
+      addLog('jane', `Reviewing rushed ${t2.id}...`);
       addLog('tuvok', `QA passed for ${t3.id}...`);
     },
     // Step 6: T1 done, T2 to Ship, T3 to Review
@@ -116,7 +116,7 @@ async function runSimulationLoop() {
       currentState.completedItems.unshift({ ...t2, status: 'Live', time: new Date().toLocaleTimeString() });
       currentState.workItems.find(w=>w.id===t3.id).room = 5;
       currentState.agents.find(a=>a.id==='data').status = 'idle';
-      currentState.agents.find(a=>a.id==='janeway').status = 'idle';
+      currentState.agents.find(a=>a.id==='jane').status = 'idle';
       currentState.agents.find(a=>a.id==='tuvok').status = 'idle';
       currentState.agents.find(a=>a.id==='torres').status = 'idle';
       addLog('obrien', `Deploying ${t3.id} to production.`);

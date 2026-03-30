@@ -22,7 +22,7 @@ interface Room {
 
 // Simulated agent data — will be replaced by WebSocket state in Sprint 7
 const INITIAL_AGENTS: Agent[] = [
-  { id: 'janeway', name: 'Janeway', role: 'PM / Triage', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'janeway' },
+  { id: 'jane', name: 'Jane', role: 'PM / Triage', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'jane' },
   { id: 'spock', name: 'Spock', role: 'Auto-Research', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'spock' },
   { id: 'torres', name: 'Torres', role: 'Junior Dev', model: 'gemini-3.1-pro', status: 'working', cssClass: 'torres' },
   { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'data' },
@@ -32,13 +32,13 @@ const INITIAL_AGENTS: Agent[] = [
 
 // Simulated log entries
 const SIMULATED_LOGS = [
-  { time: '22:38', agent: 'janeway', agentLabel: 'Janeway', message: 'Parsed incoming ticket #187 — routing to Torres.' },
+  { time: '22:38', agent: 'jane', agentLabel: 'Jane', message: 'Parsed incoming ticket #187 — routing to Torres.' },
   { time: '22:37', agent: 'torres', agentLabel: 'Torres', message: 'Building NavBar component... running npm test.' },
   { time: '22:35', agent: 'spock', agentLabel: 'Spock', message: 'Research complete: React 19 Server Components recommended.' },
   { time: '22:33', agent: 'tuvok', agentLabel: 'Tuvok', message: 'Approved PR #84. No security regressions detected.' },
   { time: '22:30', agent: 'obrien', agentLabel: "O'Brien", message: 'Deployed v2.3.1 to staging. Waiting for CI.' },
   { time: '22:28', agent: 'data', agentLabel: 'Data', message: 'Resolved database migration conflict on users table.' },
-  { time: '22:25', agent: 'janeway', agentLabel: 'Janeway', message: 'Morning triage complete. 3 tickets queued.' },
+  { time: '22:25', agent: 'jane', agentLabel: 'Jane', message: 'Morning triage complete. 3 tickets queued.' },
 ];
 
 // Infrastructure services
