@@ -26,12 +26,12 @@ interface AgentDef {
 }
 
 const AGENTS: AgentDef[] = [
-  { id: 'uhura', name: 'Uhura', role: 'PM / Triage — Translates issues to structured specs', cssClass: 'uhura' },
-  { id: 'spock', name: 'Spock', role: 'Auto-Research — Deep internet extraction & tech specs', cssClass: 'spock' },
-  { id: 'scotty', name: 'Scotty', role: 'Junior Dev — Boilerplate, React components, CSS', cssClass: 'scotty' },
-  { id: 'data', name: 'Data', role: 'Sr. Architect — Complex debugging & algorithm design', cssClass: 'data' },
-  { id: 'worf', name: 'Worf', role: 'QA Reviewer — Security audits & regression testing', cssClass: 'worf' },
-  { id: 'laforge', name: 'LaForge', role: 'SRE / Deploy — Git commits, PRs, CI/CD triggers', cssClass: 'laforge' },
+  { id: 'janeway', name: 'Janeway', role: 'PM / Triage — Routes tickets with Delta Quadrant precision', cssClass: 'janeway' },
+  { id: 'spock', name: 'Spock', role: 'Auto-Research — Logical deep analysis & tech scouting', cssClass: 'spock' },
+  { id: 'torres', name: 'Torres', role: 'Junior Dev — Builds components with Klingon intensity', cssClass: 'torres' },
+  { id: 'data', name: 'Data', role: 'Sr. Architect — Positronic debugging & algorithm design', cssClass: 'data' },
+  { id: 'tuvok', name: 'Tuvok', role: 'QA Reviewer — Vulcan precision security audits', cssClass: 'tuvok' },
+  { id: 'obrien', name: "O'Brien", role: 'SRE / Deploy — Keeps the station running no matter what', cssClass: 'obrien' },
 ];
 
 const MODEL_OPTIONS = [
@@ -68,12 +68,12 @@ const AdminConfig: React.FC = () => {
   });
 
   const [agentModels, setAgentModels] = useState<AgentModel>({
-    uhura: 'gemini-3.1-pro',
+    janeway: 'gemini-3.1-pro',
     spock: 'gemini-3.1-pro',
-    scotty: 'claude-opus-4',
+    torres: 'claude-opus-4',
     data: 'claude-opus-4',
-    worf: 'gemini-3.1-pro',
-    laforge: 'gemini-3.1-pro',
+    tuvok: 'gemini-3.1-pro',
+    obrien: 'gemini-3.1-pro',
   });
 
   const [saved, setSaved] = useState(false);

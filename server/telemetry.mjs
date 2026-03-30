@@ -9,12 +9,12 @@ let mockInterval = null;
 function getInitialState() {
   return {
     agents: [
-      { id: 'uhura', name: 'Uhura', role: 'PM / Triage', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'uhura', room: 0 },
+      { id: 'janeway', name: 'Janeway', role: 'PM / Triage', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'janeway', room: 0 },
       { id: 'spock', name: 'Spock', role: 'Auto-Research', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'spock', room: 1 },
-      { id: 'scotty', name: 'Scotty', role: 'Junior Dev', model: 'opus-4.6', status: 'idle', cssClass: 'scotty', room: 2 },
-      { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'opus-4.6', status: 'idle', cssClass: 'data', room: 2 },
-      { id: 'worf', name: 'Worf', role: 'QA Reviewer', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'worf', room: 3 },
-      { id: 'laforge', name: 'LaForge', role: 'SRE / Deploy', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'laforge', room: 5 }
+      { id: 'torres', name: 'Torres', role: 'Junior Dev', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'torres', room: 2 },
+      { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'data', room: 2 },
+      { id: 'tuvok', name: 'Tuvok', role: 'QA Reviewer', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'tuvok', room: 3 },
+      { id: 'obrien', name: "O'Brien", role: 'SRE / Deploy', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'obrien', room: 5 }
     ],
     logs: [],
     workItems: [],
@@ -54,28 +54,28 @@ async function runSimulationLoop() {
     // Step 1: T1 enters Backlog
     async () => {
       currentState.workItems.push({ ...t1, room: 0 }); // Backlog
-      currentState.agents.find(a=>a.id==='uhura').status = 'working';
-      addLog('uhura', `Ingesting ${t1.id} into Backlog.`);
+      currentState.agents.find(a=>a.id==='janeway').status = 'working';
+      addLog('janeway', `Ingesting ${t1.id} into Backlog.`);
     },
     // Step 2: T1 to Build, T2 enters Backlog
     async () => {
       currentState.workItems.find(w=>w.id===t1.id).room = 2; // Build
       currentState.workItems.push({ ...t2, room: 0 });
-      currentState.agents.find(a=>a.id==='scotty').room = 2;
-      currentState.agents.find(a=>a.id==='scotty').status = 'working';
-      addLog('scotty', `Started dev on ${t1.id}.`);
-      addLog('uhura', `Triaging new ticket ${t2.id}.`);
+      currentState.agents.find(a=>a.id==='torres').room = 2;
+      currentState.agents.find(a=>a.id==='torres').status = 'working';
+      addLog('torres', `Started dev on ${t1.id}.`);
+      addLog('janeway', `Triaging new ticket ${t2.id}.`);
     },
     // Step 3: T1 to QA, T2 to Build, T3 enters Backlog
     async () => {
       currentState.workItems.find(w=>w.id===t1.id).room = 3; // QA
       currentState.workItems.find(w=>w.id===t2.id).room = 2; // Build
       currentState.workItems.push({ ...t3, room: 0 });
-      currentState.agents.find(a=>a.id==='uhura').status = 'idle';
-      currentState.agents.find(a=>a.id==='worf').status = 'working';
+      currentState.agents.find(a=>a.id==='janeway').status = 'idle';
+      currentState.agents.find(a=>a.id==='tuvok').status = 'working';
       currentState.agents.find(a=>a.id==='data').room = 2;
       currentState.agents.find(a=>a.id==='data').status = 'working';
-      addLog('worf', `Testing ${t1.id} logic.`);
+      addLog('tuvok', `Testing ${t1.id} logic.`);
       addLog('data', `Jumping in to build ${t2.id}.`);
     },
     // Step 4: T1 to Review, T2 to QA, T3 to Build
@@ -85,20 +85,20 @@ async function runSimulationLoop() {
       currentState.workItems.find(w=>w.id===t3.id).room = 2; // Build
       currentState.agents.find(a=>a.id==='data').room = 4; // Data reviews
       addLog('data', `Reviewing ${t1.id} PR.`);
-      addLog('worf', `Testing ${t2.id} edge cases.`);
-      addLog('scotty', `Starting ${t3.id} architecture.`);
+      addLog('tuvok', `Testing ${t2.id} edge cases.`);
+      addLog('torres', `Starting ${t3.id} architecture.`);
     },
     // Step 5: T1 to Ship, T2 to Review, T3 to QA
     async () => {
       currentState.workItems.find(w=>w.id===t1.id).room = 5; // Ship
       currentState.workItems.find(w=>w.id===t2.id).room = 4; // Review
       currentState.workItems.find(w=>w.id===t3.id).room = 3; // QA
-      currentState.agents.find(a=>a.id==='laforge').status = 'working';
-      currentState.agents.find(a=>a.id==='uhura').room = 4; // PM reviews
-      currentState.agents.find(a=>a.id==='uhura').status = 'working';
-      addLog('laforge', `Deploying ${t1.id} to production.`);
-      addLog('uhura', `Reviewing rushed ${t2.id}...`);
-      addLog('worf', `QA passed for ${t3.id}...`);
+      currentState.agents.find(a=>a.id==='obrien').status = 'working';
+      currentState.agents.find(a=>a.id==='janeway').room = 4; // PM reviews
+      currentState.agents.find(a=>a.id==='janeway').status = 'working';
+      addLog('obrien', `Deploying ${t1.id} to production.`);
+      addLog('janeway', `Reviewing rushed ${t2.id}...`);
+      addLog('tuvok', `QA passed for ${t3.id}...`);
     },
     // Step 6: T1 done, T2 to Ship, T3 to Review
     async () => {
@@ -107,7 +107,7 @@ async function runSimulationLoop() {
       currentState.workItems.find(w=>w.id===t2.id).room = 5;
       currentState.workItems.find(w=>w.id===t3.id).room = 4;
       currentState.agents.find(a=>a.id==='data').room = 4; // Data reviews t3
-      addLog('laforge', `Deploying ${t2.id} to production.`);
+      addLog('obrien', `Deploying ${t2.id} to production.`);
       addLog('system', `${t1.id} successfully shipped!`);
     },
     // Step 7: T2 done, T3 to Ship
@@ -116,10 +116,10 @@ async function runSimulationLoop() {
       currentState.completedItems.unshift({ ...t2, status: 'Live', time: new Date().toLocaleTimeString() });
       currentState.workItems.find(w=>w.id===t3.id).room = 5;
       currentState.agents.find(a=>a.id==='data').status = 'idle';
-      currentState.agents.find(a=>a.id==='uhura').status = 'idle';
-      currentState.agents.find(a=>a.id==='worf').status = 'idle';
-      currentState.agents.find(a=>a.id==='scotty').status = 'idle';
-      addLog('laforge', `Deploying ${t3.id} to production.`);
+      currentState.agents.find(a=>a.id==='janeway').status = 'idle';
+      currentState.agents.find(a=>a.id==='tuvok').status = 'idle';
+      currentState.agents.find(a=>a.id==='torres').status = 'idle';
+      addLog('obrien', `Deploying ${t3.id} to production.`);
     },
     // Step 8: Complete
     async () => {

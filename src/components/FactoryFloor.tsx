@@ -22,23 +22,23 @@ interface Room {
 
 // Simulated agent data — will be replaced by WebSocket state in Sprint 7
 const INITIAL_AGENTS: Agent[] = [
-  { id: 'uhura', name: 'Uhura', role: 'PM / Triage', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'uhura' },
+  { id: 'janeway', name: 'Janeway', role: 'PM / Triage', model: 'gemini-2.5-flash', status: 'idle', cssClass: 'janeway' },
   { id: 'spock', name: 'Spock', role: 'Auto-Research', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'spock' },
-  { id: 'scotty', name: 'Scotty', role: 'Junior Dev', model: 'opus-4.6', status: 'working', cssClass: 'scotty' },
-  { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'opus-4.6', status: 'idle', cssClass: 'data' },
-  { id: 'worf', name: 'Worf', role: 'QA Reviewer', model: 'gemini-3.1-pro', status: 'online', cssClass: 'worf' },
-  { id: 'laforge', name: 'LaForge', role: 'SRE / Deploy', model: 'gemini-3.1-pro', status: 'online', cssClass: 'laforge' },
+  { id: 'torres', name: 'Torres', role: 'Junior Dev', model: 'gemini-3.1-pro', status: 'working', cssClass: 'torres' },
+  { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'data' },
+  { id: 'tuvok', name: 'Tuvok', role: 'QA Reviewer', model: 'gemini-3.1-pro', status: 'online', cssClass: 'tuvok' },
+  { id: 'obrien', name: "O'Brien", role: 'SRE / Deploy', model: 'gemini-2.5-flash', status: 'online', cssClass: 'obrien' },
 ];
 
 // Simulated log entries
 const SIMULATED_LOGS = [
-  { time: '22:38', agent: 'uhura', agentLabel: 'Uhura', message: 'Parsed incoming ticket #187 — routing to Scotty.' },
-  { time: '22:37', agent: 'scotty', agentLabel: 'Scotty', message: 'Building NavBar component... running npm test.' },
+  { time: '22:38', agent: 'janeway', agentLabel: 'Janeway', message: 'Parsed incoming ticket #187 — routing to Torres.' },
+  { time: '22:37', agent: 'torres', agentLabel: 'Torres', message: 'Building NavBar component... running npm test.' },
   { time: '22:35', agent: 'spock', agentLabel: 'Spock', message: 'Research complete: React 19 Server Components recommended.' },
-  { time: '22:33', agent: 'worf', agentLabel: 'Worf', message: 'Approved PR #84. No security regressions detected.' },
-  { time: '22:30', agent: 'laforge', agentLabel: 'LaForge', message: 'Deployed v2.3.1 to staging. Waiting for CI.' },
+  { time: '22:33', agent: 'tuvok', agentLabel: 'Tuvok', message: 'Approved PR #84. No security regressions detected.' },
+  { time: '22:30', agent: 'obrien', agentLabel: "O'Brien", message: 'Deployed v2.3.1 to staging. Waiting for CI.' },
   { time: '22:28', agent: 'data', agentLabel: 'Data', message: 'Resolved database migration conflict on users table.' },
-  { time: '22:25', agent: 'uhura', agentLabel: 'Uhura', message: 'Morning triage complete. 3 tickets queued.' },
+  { time: '22:25', agent: 'janeway', agentLabel: 'Janeway', message: 'Morning triage complete. 3 tickets queued.' },
 ];
 
 // Infrastructure services
