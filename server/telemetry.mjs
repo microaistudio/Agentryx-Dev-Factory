@@ -269,13 +269,15 @@ const server = http.createServer((req, res) => {
     }); return;
   }
 
-  // Remote agent states
+  // Remote agent states + workItem management
   if (req.url === '/api/telemetry/state' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
         const update = JSON.parse(body);
+        
+        // Agent state updates
         if (update.agentId) {
             const agent = currentState.agents.find(a => a.id === update.agentId);
             if (agent) {
@@ -283,10 +285,70 @@ const server = http.createServer((req, res) => {
                 if (update.status !== undefined) agent.status = update.status;
             }
         }
+        
+        // WorkItem lifecycle
+        if (update.workItem) {
+          const wi = update.workItem;
+          if (wi.action === 'create') {
+            currentState.workItems.push({ id: wi.id, name: wi.name, room: wi.room || 0, color: wi.color || '#60a5fa' });
+          } else if (wi.action === 'move') {
+            const item = currentState.workItems.find(w => w.id === wi.id);
+            if (item) item.room = wi.room;
+          } else if (wi.action === 'complete') {
+            currentState.workItems = currentState.workItems.filter(w => w.id !== wi.id);
+            currentState.completedItems.unshift({ id: wi.id, name: wi.name, color: wi.color || '#60a5fa', status: 'Live', time: new Date().toLocaleTimeString() });
+          }
+        }
+        
         if (update.log) addLog(update.agentId, update.log);
         broadcast();
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true }));
+      } catch (err) {
+        res.writeHead(400); res.end(JSON.stringify({ error: err.message }));
+      }
+    }); return;
+  }
+
+  // List generated workspace files
+  if (req.url === '/api/workspace/files' && req.method === 'GET') {
+    const agentWs = '/home/subhash.thakur.india/Projects/agent-workspace';
+    try {
+      const entries = fs.readdirSync(agentWs, { withFileTypes: true });
+      const files = entries
+        .filter(e => e.isFile() && !e.name.startsWith('.'))
+        .map(e => {
+          const content = fs.readFileSync(path.join(agentWs, e.name), 'utf-8');
+          const stat = fs.statSync(path.join(agentWs, e.name));
+          return { name: e.name, size: stat.size, modified: stat.mtime, content };
+        });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ files }));
+    } catch (err) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ files: [] }));
+    }
+    return;
+  }
+
+  // Run a generated file from workspace
+  if (req.url === '/api/workspace/run' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { filename } = JSON.parse(body);
+        const agentWs = '/home/subhash.thakur.india/Projects/agent-workspace';
+        const filePath = path.join(agentWs, filename);
+        
+        const child = spawn('node', [filePath], { cwd: agentWs, timeout: 10000 });
+        let output = '';
+        child.stdout.on('data', d => output += d.toString());
+        child.stderr.on('data', d => output += d.toString());
+        child.on('close', (code) => {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ exitCode: code, output }));
+        });
       } catch (err) {
         res.writeHead(400); res.end(JSON.stringify({ error: err.message }));
       }

@@ -62,6 +62,9 @@ const FactoryFloor: React.FC = () => {
   const [showCompletedModal, setShowCompletedModal] = useState(false);
   const [taskInput, setTaskInput] = useState('');
   const [factoryRunning, setFactoryRunning] = useState(false);
+  const [workspaceFiles, setWorkspaceFiles] = useState<any[]>([]);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [runOutput, setRunOutput] = useState('');
 
   const triggerSimulation = async () => {
     try {
@@ -381,6 +384,82 @@ const FactoryFloor: React.FC = () => {
               ))}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Workspace Output Viewer */}
+      <div className="glass-panel" style={{ marginTop: '16px' }}>
+        <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 className="panel-title">📂 Agent Workspace — Generated Code</h3>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={async () => {
+              try {
+                const res = await fetch('http://localhost:4401/api/workspace/files');
+                const data = await res.json();
+                setWorkspaceFiles(data.files || []);
+              } catch(e) { console.error(e); }
+            }} style={{ padding: '4px 12px', background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', borderRadius: '4px', color: '#c4b5fd', cursor: 'pointer', fontSize: '0.8rem' }}>
+              🔄 Refresh Files
+            </button>
+          </div>
+        </div>
+        <div className="panel-body">
+          {workspaceFiles.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '20px' }}>No files yet. Submit a task above to generate code.</p>
+          ) : (
+            <div>
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                {workspaceFiles.map((f: any) => (
+                  <button
+                    key={f.name}
+                    onClick={() => setSelectedFile(f)}
+                    style={{
+                      padding: '6px 14px',
+                      background: selectedFile?.name === f.name ? 'rgba(139,92,246,0.3)' : 'rgba(255,255,255,0.05)',
+                      border: selectedFile?.name === f.name ? '1px solid #8b5cf6' : '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '6px',
+                      color: '#e2e8f0',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    📄 {f.name} <span style={{ color: '#64748b', marginLeft: '4px' }}>({f.size}b)</span>
+                  </button>
+                ))}
+              </div>
+              {selectedFile && (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ color: '#c4b5fd', fontWeight: 'bold' }}>📄 {selectedFile.name}</span>
+                    <button onClick={async () => {
+                      try {
+                        const res = await fetch('http://localhost:4401/api/workspace/run', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ filename: selectedFile.name })
+                        });
+                        const data = await res.json();
+                        setRunOutput(`Exit code: ${data.exitCode}\n${data.output}`);
+                      } catch(e) { setRunOutput('Run failed: ' + e); }
+                    }} style={{ padding: '4px 12px', background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', borderRadius: '4px', color: '#fff', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                      ▶ Run
+                    </button>
+                  </div>
+                  <pre style={{ background: 'rgba(0,0,0,0.5)', padding: '16px', borderRadius: '8px', color: '#a5f3fc', fontSize: '0.8rem', overflow: 'auto', maxHeight: '300px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    {selectedFile.content}
+                  </pre>
+                  {runOutput && (
+                    <div style={{ marginTop: '8px' }}>
+                      <span style={{ color: '#34d399', fontWeight: 'bold', fontSize: '0.85rem' }}>Console Output:</span>
+                      <pre style={{ background: 'rgba(0,0,0,0.6)', padding: '12px', borderRadius: '6px', color: '#fbbf24', fontSize: '0.8rem', marginTop: '4px', border: '1px solid rgba(52,211,153,0.3)' }}>
+                        {runOutput}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
