@@ -22,22 +22,23 @@ interface Room {
 
 // Simulated agent data — will be replaced by WebSocket state in Sprint 7
 const INITIAL_AGENTS: Agent[] = [
-  { id: 'alice', name: 'Alice', role: 'PM / Triage', model: 'gemini-1.5-flash', status: 'idle', cssClass: 'alice' },
-  { id: 'charlie', name: 'Charlie', role: 'Junior Dev', model: 'gemini-1.5-pro', status: 'working', cssClass: 'charlie' },
-  { id: 'henry', name: 'Henry', role: 'Sr. Architect', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'henry' },
-  { id: 'ralph', name: 'Ralph', role: 'QA Reviewer', model: 'gemini-1.5-pro', status: 'online', cssClass: 'ralph' },
-  { id: 'opsbot', name: 'OpsBot', role: 'SRE / Deploy', model: 'gemini-1.5-flash', status: 'online', cssClass: 'opsbot' },
+  { id: 'uhura', name: 'Uhura', role: 'PM / Triage', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'uhura' },
+  { id: 'spock', name: 'Spock', role: 'Auto-Research', model: 'gemini-3.1-pro', status: 'idle', cssClass: 'spock' },
+  { id: 'scotty', name: 'Scotty', role: 'Junior Dev', model: 'opus-4.6', status: 'working', cssClass: 'scotty' },
+  { id: 'data', name: 'Data', role: 'Sr. Architect', model: 'opus-4.6', status: 'idle', cssClass: 'data' },
+  { id: 'worf', name: 'Worf', role: 'QA Reviewer', model: 'gemini-3.1-pro', status: 'online', cssClass: 'worf' },
+  { id: 'laforge', name: 'LaForge', role: 'SRE / Deploy', model: 'gemini-3.1-pro', status: 'online', cssClass: 'laforge' },
 ];
 
 // Simulated log entries
 const SIMULATED_LOGS = [
-  { time: '22:38', agent: 'alice', agentLabel: 'Alice', message: 'Parsed incoming ticket #187 — routing to Charlie.' },
-  { time: '22:37', agent: 'charlie', agentLabel: 'Charlie', message: 'Building NavBar component... running npm test.' },
-  { time: '22:35', agent: 'charlie', agentLabel: 'Charlie', message: 'Entered Build Sandbox. Reading codebase via RAG.' },
-  { time: '22:33', agent: 'ralph', agentLabel: 'Ralph', message: 'Approved PR #84. No regressions detected.' },
-  { time: '22:30', agent: 'opsbot', agentLabel: 'OpsBot', message: 'Deployed v2.3.1 to staging. Waiting for CI.' },
-  { time: '22:28', agent: 'henry', agentLabel: 'Henry', message: 'Resolved database migration conflict on users table.' },
-  { time: '22:25', agent: 'alice', agentLabel: 'Alice', message: 'Morning triage complete. 3 tickets queued.' },
+  { time: '22:38', agent: 'uhura', agentLabel: 'Uhura', message: 'Parsed incoming ticket #187 — routing to Scotty.' },
+  { time: '22:37', agent: 'scotty', agentLabel: 'Scotty', message: 'Building NavBar component... running npm test.' },
+  { time: '22:35', agent: 'spock', agentLabel: 'Spock', message: 'Research complete: React 19 Server Components recommended.' },
+  { time: '22:33', agent: 'worf', agentLabel: 'Worf', message: 'Approved PR #84. No security regressions detected.' },
+  { time: '22:30', agent: 'laforge', agentLabel: 'LaForge', message: 'Deployed v2.3.1 to staging. Waiting for CI.' },
+  { time: '22:28', agent: 'data', agentLabel: 'Data', message: 'Resolved database migration conflict on users table.' },
+  { time: '22:25', agent: 'uhura', agentLabel: 'Uhura', message: 'Morning triage complete. 3 tickets queued.' },
 ];
 
 // Infrastructure services
@@ -54,7 +55,7 @@ const FactoryFloor: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isTerminalExpanded, setIsTerminalExpanded] = useState(false);
 
-  const [liveAgents, setLiveAgents] = useState(INITIAL_AGENTS.map(a => ({...a, room: a.role === 'Junior Dev' ? 2 : (a.role === 'PM / Triage' ? 0 : 1)})));
+  const [liveAgents, setLiveAgents] = useState(INITIAL_AGENTS.map(a => ({...a, room: a.role === 'PM / Triage' ? 0 : a.role === 'Auto-Research' ? 1 : a.role === 'Junior Dev' || a.role === 'Sr. Architect' ? 2 : a.role === 'QA Reviewer' ? 3 : a.role === 'SRE / Deploy' ? 5 : 1})));
   const [liveLogs, setLiveLogs] = useState(SIMULATED_LOGS);
   const [workItems, setWorkItems] = useState<{id: string, name: string, room: number, color: string}[]>([]);
   const [completedItems, setCompletedItems] = useState<any[]>([]);
@@ -83,7 +84,7 @@ const FactoryFloor: React.FC = () => {
 
   const rooms: (Room & { workItems: any[] })[] = [
     { title: 'Backlog / Triage', icon: '📋', agents: liveAgents.filter(a => a.room === 0), workItems: workItems.filter(w => w.room === 0) },
-    { title: 'Break Room', icon: '☕', agents: liveAgents.filter(a => a.room === 1), workItems: workItems.filter(w => w.room === 1) },
+    { title: 'Research Lab', icon: '🔬', agents: liveAgents.filter(a => a.room === 1), workItems: workItems.filter(w => w.room === 1) },
     { title: 'Build Sandbox', icon: '🔨', agents: liveAgents.filter(a => a.room === 2), workItems: workItems.filter(w => w.room === 2) },
     { title: 'Testing / QA', icon: '🧪', agents: liveAgents.filter(a => a.room === 3), workItems: workItems.filter(w => w.room === 3) },
     { title: 'Code Review', icon: '🔎', agents: liveAgents.filter(a => a.room === 4), workItems: workItems.filter(w => w.room === 4) },

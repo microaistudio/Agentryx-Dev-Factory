@@ -26,12 +26,12 @@ interface AgentDef {
 }
 
 const AGENTS: AgentDef[] = [
-  { id: 'alice', name: 'Alice', role: 'PM / Triage — Translates issues to structured specs', cssClass: 'alice' },
-  { id: 'ada', name: 'Ada', role: 'Auto-Research — Deep internet extraction & tech specs', cssClass: 'ada' },
-  { id: 'charlie', name: 'Charlie', role: 'Junior Dev — Boilerplate, React components, CSS', cssClass: 'charlie' },
-  { id: 'henry', name: 'Henry', role: 'Sr. Architect — Complex debugging & algorithm design', cssClass: 'henry' },
-  { id: 'ralph', name: 'Ralph', role: 'QA Reviewer — Security audits & regression testing', cssClass: 'ralph' },
-  { id: 'opsbot', name: 'OpsBot', role: 'SRE / Deploy — Git commits, PRs, CI/CD triggers', cssClass: 'opsbot' },
+  { id: 'uhura', name: 'Uhura', role: 'PM / Triage — Translates issues to structured specs', cssClass: 'uhura' },
+  { id: 'spock', name: 'Spock', role: 'Auto-Research — Deep internet extraction & tech specs', cssClass: 'spock' },
+  { id: 'scotty', name: 'Scotty', role: 'Junior Dev — Boilerplate, React components, CSS', cssClass: 'scotty' },
+  { id: 'data', name: 'Data', role: 'Sr. Architect — Complex debugging & algorithm design', cssClass: 'data' },
+  { id: 'worf', name: 'Worf', role: 'QA Reviewer — Security audits & regression testing', cssClass: 'worf' },
+  { id: 'laforge', name: 'LaForge', role: 'SRE / Deploy — Git commits, PRs, CI/CD triggers', cssClass: 'laforge' },
 ];
 
 const MODEL_OPTIONS = [
@@ -68,12 +68,12 @@ const AdminConfig: React.FC = () => {
   });
 
   const [agentModels, setAgentModels] = useState<AgentModel>({
-    alice: 'gemini-1.5-flash',
-    ada: 'gemini-3.1-pro',
-    charlie: 'gemini-1.5-pro',
-    henry: 'gemini-3.1-pro',
-    ralph: 'gemini-1.5-pro',
-    opsbot: 'gemini-1.5-flash',
+    uhura: 'gemini-3.1-pro',
+    spock: 'gemini-3.1-pro',
+    scotty: 'claude-opus-4',
+    data: 'claude-opus-4',
+    worf: 'gemini-3.1-pro',
+    laforge: 'gemini-3.1-pro',
   });
 
   const [saved, setSaved] = useState(false);
