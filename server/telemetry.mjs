@@ -1,6 +1,7 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawn } from 'node:child_process';
 
 const PORT = 4401;
 const clients = new Set();
@@ -164,6 +165,49 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: true, message: 'Simulation Pipeline Started' }));
     return;
+  }
+
+  // 🧠 REAL FACTORY: Trigger Cognitive Engine with a task
+  if (req.url === '/api/factory/run' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { task } = JSON.parse(body);
+        if (!task) { res.writeHead(400); res.end(JSON.stringify({ error: 'No task provided' })); return; }
+        
+        // Spawn factory_graph.js as a child process
+        const child = spawn('node', ['/home/subhash.thakur.india/Projects/cognitive-engine/factory_graph.js', task], {
+          cwd: '/home/subhash.thakur.india/Projects/cognitive-engine',
+          stdio: ['ignore', 'pipe', 'pipe'],
+          env: { ...process.env }
+        });
+        
+        addLog('system', `🖖 Factory engaged! Task: "${task.substring(0, 80)}"`);
+        broadcast();
+        
+        child.stdout.on('data', (data) => {
+          const line = data.toString().trim();
+          if (line) { addLog('system', line.substring(0, 120)); broadcast(); }
+        });
+        child.stderr.on('data', (data) => {
+          const line = data.toString().trim();
+          if (line && !line.includes('ExperimentalWarning')) {
+            addLog('system', `⚠️ ${line.substring(0, 120)}`);
+            broadcast();
+          }
+        });
+        child.on('close', (code) => {
+          addLog('system', code === 0 ? '✅ Pipeline complete. All agents finished.' : `❌ Pipeline exited with code ${code}`);
+          broadcast();
+        });
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'Factory pipeline spawned' }));
+      } catch (err) {
+        res.writeHead(400); res.end(JSON.stringify({ error: err.message }));
+      }
+    }); return;
   }
 
   // Save Config from UI

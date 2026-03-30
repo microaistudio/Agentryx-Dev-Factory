@@ -60,11 +60,27 @@ const FactoryFloor: React.FC = () => {
   const [workItems, setWorkItems] = useState<{id: string, name: string, room: number, color: string}[]>([]);
   const [completedItems, setCompletedItems] = useState<any[]>([]);
   const [showCompletedModal, setShowCompletedModal] = useState(false);
+  const [taskInput, setTaskInput] = useState('');
+  const [factoryRunning, setFactoryRunning] = useState(false);
 
   const triggerSimulation = async () => {
     try {
       await fetch('http://localhost:4401/api/telemetry/simulate', { method: 'POST' });
     } catch(e) { console.error('Sim Error', e); }
+  };
+
+  const submitRealTask = async () => {
+    if (!taskInput.trim() || factoryRunning) return;
+    setFactoryRunning(true);
+    try {
+      await fetch('http://localhost:4401/api/factory/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task: taskInput })
+      });
+      setTaskInput('');
+    } catch(e) { console.error('Factory Error', e); }
+    setTimeout(() => setFactoryRunning(false), 60000); // Auto-reset after 60s
   };
 
   useEffect(() => {
@@ -109,6 +125,33 @@ const FactoryFloor: React.FC = () => {
           <span className="badge-dot" />
           All Systems Online
         </div>
+      </div>
+
+      {/* 🖖 Task Command Bar */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'stretch' }}>
+        <div style={{ flex: 1, position: 'relative' }}>
+          <input
+            type="text"
+            value={taskInput}
+            onChange={(e) => setTaskInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submitRealTask()}
+            placeholder="🖖 Enter a task for the crew... e.g. 'Build a REST API with Express'"
+            style={{ width: '100%', padding: '12px 16px', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(139, 92, 246, 0.4)', borderRadius: '8px', color: '#e2e8f0', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box' }}
+          />
+        </div>
+        <button
+          onClick={submitRealTask}
+          disabled={factoryRunning || !taskInput.trim()}
+          style={{ padding: '12px 20px', background: factoryRunning ? '#334155' : 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)', color: '#fff', border: 'none', borderRadius: '8px', cursor: factoryRunning ? 'wait' : 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 15px rgba(99, 102, 241, 0.3)', whiteSpace: 'nowrap' as const }}
+        >
+          {factoryRunning ? '⏳ Crew Working...' : '🚀 Engage'}
+        </button>
+        <button
+          onClick={triggerSimulation}
+          style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', color: '#94a3b8', cursor: 'pointer', whiteSpace: 'nowrap' as const }}
+        >
+          ▶ Demo
+        </button>
       </div>
 
       {/* Stats Bar */}
